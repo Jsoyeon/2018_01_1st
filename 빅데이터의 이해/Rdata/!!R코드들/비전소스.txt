@@ -1,0 +1,60 @@
+
+
+getwd()           
+setwd("C:/Rdata")
+getwd()
+
+install.packages("KoNLP")
+install.packages("RColorBrewer")
+install.packages("wordcloud")
+library(KoNLP)
+library(RColorBrewer)
+library(wordcloud)
+
+
+
+useSejongDic()
+x <- read.csv("Vision.csv")
+head(x)
+
+# 데이터가 행으로 되어있어야한다. 이 데이터는 하나의 열에 몰려있기 때문에 바꿔준다.
+xx <- t(x)
+myword <-sapply(xx, extractNoun, USE.NAMES=F) 
+head(myword)
+
+# 리스트형태의 데이터를 매트릭스형태나 일반 데이터로 바꿔주는 함수
+unmyword <- unlist(myword)
+unmyword
+
+# 음절이 둘 이상인 것들로 추리겠다. 
+unmyword2 <- Filter(
+  function(x)
+  {nchar(x)>=2},unmyword)
+
+# 원하지 않는 내용 다른 것으로 바꾸던지 빼던지
+# gsub("원하지 않는 내용", "바꾸고 싶은 것의 내용", 데이터)
+
+#
+nouns <-extractNoun(unmyword2)
+wordFreq <-table(unmyword2) 
+head(unmyword2)
+
+head(sort(wordFreq, decreasing = T), 80)
+y <-extractNoun(unmyword2)
+y <- table(unmyword2)
+head(y) 
+wordcloud(names(y), freq=y, scale=c(5,1), rot.per=0.25, min.freq=5,
+          random.order=F, random.color=T, colors = brewer.pal(9,"Set1"))
+#그림 1
+a <- head(sort(y, decreasing=T), 20)
+pie(a, col=rainbow(30), radius=1)
+
+#그림 2
+pct <- round(a/sum(a)*100,1) 
+names(a)
+lab <-paste(names(a), "\n", pct, "%") 
+pie(a, mail="컴퓨터비전", col=rainbow(25), radius=0.9, cex=0.95, labels=lab)
+
+#그림 3
+par(new=T)
+pie(a, radius=0.7, col="white", labels=NA, border=NA)

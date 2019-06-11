@@ -1,0 +1,79 @@
+ch. 8 집단간 차이분석
+
+# 데이터 불러오기
+getwd()           
+setwd("C:/Rdata") 
+getwd()
+
+rr1 <- read.csv("r_ttest.csv")
+
+# 분석
+var.test(rr1$만족도 ~ rr1$성별1)
+t.test(rr1$만족도 ~ rr1$성별1, var.equal=F)
+
+install.packages("gplots")
+library(gplots)
+
+plotmeans(rr1$만족도 ~ rr1$성별1, data=rr1, xlab="성별", ylab="만족도", ci.label=TRUE, mean.label=TRUE, ylim=c(1,5), barwidth=3, digits=2, col="blue", pch=1, barcol="red", main="성별에 따른 만족도 차이")
+
+예제연습. 1
+# 분석
+var.test(rr1$조직몰입 ~ rr1$성별1)
+t.test(rr1$조직몰입 ~ rr1$성별1, var.equal=T)
+
+# 시각화
+plotmeans(rr1$조직몰입 ~ rr1$성별1, data=rr1, xlab="성별", ylab="조직몰입", ci.label=TRUE, mean.label=TRUE, ylim=c(1,5), barwidth=3, digits=2, col="blue", pch=1, barcol="red", main="성별에 따른 조직몰입 차이")
+
+8.3.3
+getwd()           
+setwd("C:/Rdata") 
+getwd()
+
+rr1 <- read.csv("r_anova.csv")
+str(rr1)
+head(rr1)
+summary(rr1)
+
+bartlett.test(rr1$만족도 ~ rr1$산업분야1, data=rr1)
+ano1 <- aov(rr1$만족도 ~ rr1$산업분야1, data=rr1)
+anova(ano1)
+
+install.packages("sjPlot")
+library(sjPlot)
+sjstats::grpmean(rr1$만족도, rr1$산업분야1, encoding="EUC-KR")
+install.packages("agricolae")
+library(agricolae)
+duncan.test(ano1, "rr1$산업분야1", alpha=0.05, console=TRUE)
+
+8.3.4 R을 이용한 시각화
+getwd()           
+setwd("C:/Rdata") 
+getwd()
+
+rr1 <- read.csv("r_anova.csv")
+install.packages("gplots")
+library(gplots)
+plotmeans(rr1$만족도 ~ rr1$산업분야1, xlab="산업분야", ylab="만족도", ci.label=TRUE, mean.label=TRUE, ylim=c(1,5), barwidth=3, digits=2, col="blue", pch=1, barcol="red", main="산업분야에 따른 만족도 차이")
+
+예제연습. 1
+bartlett.test(rr1$만족도 ~ rr1$최종학력1, data=rr1)
+ano2 <- aov(rr1$만족도 ~ rr1$최종학력1, data=rr1)
+
+anova(ano2)
+sjt.grpmean(rr1$만족도, rr1$최종학력1, encoding="EUC-KR")
+library(sjPlot)
+plotmeans(rr1$만족도 ~ rr1$최종학력1, xlab="최종학력", ylab="만족도", ci.label=TRUE, mean.label=TRUE, ylim=c(1,5), barwidth=3, digits=2, col="blue", pch=1, barcol="red", main="최종학력에 따른 만족도 차이")
+
+duncan.test(ano2, "rr1$최종학력1", alpha=0.05, console=TRUE)
+
+예제연습. 3
+bartlett.test(rr1$기업문화 ~ rr1$최종학력1, data=rr1)
+ano3 <- aov(rr1$기업문화 ~ rr1$최종학력1, data=rr1)
+
+anova(ano3)
+sjt.grpmean(rr1$기업문화, rr1$최종학력1, encoding="EUC-KR")
+library(sjPlot)
+plotmeans(rr1$기업문화 ~ rr1$최종학력1, xlab="최종학력", ylab="기업문화", ci.label=TRUE, mean.label=TRUE, ylim=c(1,5), barwidth=3, digits=2, col="blue", pch=1, barcol="red", main="최종학력에 따른 기업문화 차이")
+
+duncan.test(ano3, "rr1$최종학력1", alpha=0.05, console=TRUE)
+
